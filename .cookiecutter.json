@@ -1,0 +1,15 @@
+{
+  "_output_dir": "/Users/akshay/github",
+  "_repo_dir": "/Users/akshay/.cookiecutters/cookiecutter-hypermodern-python",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Akshay Balsubramani",
+  "copyright_year": "2023",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "akshay@akshay.bio",
+  "friendly_name": "skeins",
+  "github_user": "b-akshay",
+  "license": "MIT",
+  "package_name": "skeins",
+  "project_name": "skeins",
+  "version": "0.0.0"
+}
