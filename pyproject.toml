@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "skeins"
-version = "0.0.0"
+version = "0.1.0"
 description = "skeins"
 authors = ["Akshay Balsubramani <akshay@akshay.bio>"]
 license = "MIT"
@@ -16,8 +16,9 @@ classifiers = [
 Changelog = "https://github.com/b-akshay/skeins/releases"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-click = ">=8.0.1"
+python = ">=3.9,<3.13"
+scipy = "^1.11.1"
+numpy = "^1.25.2"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
