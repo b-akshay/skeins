@@ -23,7 +23,19 @@
 
 ## Features
 
-- TODO
+This package provides interfaces to a range of graph tasks, aiming to be: 
+
+- **Simple** - minimal dependencies (just numpy, scipy) and lines of code
+- **Fast** - especially on kNN graphs (efficient representations of manifolds). Ability to operate on graphs with 1 million nodes on a laptop. Linear algebra routines ensure scaling beyond this
+- **Complete** - well-documented and tested, with usage examples on biochem and other datasets
+- **Flexible** - focus on versatility of function (a range of graph tasks, and works on all graph inputs) and extensibility
+
+Many features grew out of me wanting to use an efficient algorithm in the literature, and not finding a good implementation on the Python stack satisfying the above.
+
+
+
+
+
 
 ## Requirements
 
