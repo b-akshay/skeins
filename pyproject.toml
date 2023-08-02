@@ -17,8 +17,8 @@ Changelog = "https://github.com/b-akshay/skeins/releases"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
-scipy = "^1.11.1"
-numpy = "^1.25.2"
+scipy = ">=1.11"
+numpy = ">=1.25"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
