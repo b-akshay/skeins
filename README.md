@@ -1,5 +1,8 @@
 # skeins
 
+A collection of fast and efficient algorithmic primitives.
+
+
 [![PyPI](https://img.shields.io/pypi/v/skeins.svg)][pypi_]
 [![Status](https://img.shields.io/pypi/status/skeins.svg)][status]
 [![Python Version](https://img.shields.io/pypi/pyversions/skeins)][python version]
@@ -39,15 +42,16 @@ Many features grew out of me wanting to use an efficient algorithm in the litera
 
 ## Requirements
 
-- TODO
+TBD
 
 ## Installation
 
-You can install _skeins_ via [pip] from [PyPI]:
+TBD
+<!-- You can install _skeins_ via [pip] from [PyPI]:
 
 ```console
 $ pip install skeins
-```
+``` -->
 
 ## Usage
 
@@ -68,6 +72,8 @@ _skeins_ is free and open source software.
 If you encounter any problems,
 please [file an issue] along with a detailed description.
 
+
+<!--
 ## Credits
 
 This project was generated from [@cjolowicz]'s [Hypermodern Python Cookiecutter] template.
@@ -78,8 +84,9 @@ This project was generated from [@cjolowicz]'s [Hypermodern Python Cookiecutter]
 [file an issue]: https://github.com/b-akshay/skeins/issues
 [pip]: https://pip.pypa.io/
 
-<!-- github-only -->
+# github-only
 
 [license]: https://github.com/b-akshay/skeins/blob/main/LICENSE
 [contributor guide]: https://github.com/b-akshay/skeins/blob/main/CONTRIBUTING.md
 [command-line reference]: https://skeins.readthedocs.io/en/latest/usage.html
+-->
