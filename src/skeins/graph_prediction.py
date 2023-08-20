@@ -8,16 +8,40 @@ import numpy as np, scipy
 
 
 def harmonic_extension(
-    labeled_signal, # n-matrix with labeled rows set to their fixed values, and unlabeled rows set to arbitrary values.
-    adj_mat, # (n x n) adjacency matrix
-    labeled_ndces, # Boolean mask indicating which cells are in the labeled set.
+    labeled_signal, 
+    adj_mat, 
+    labeled_ndces, 
     method='iterative', 
-    eps_tol=0.01 # Min. relative error in consecutive iterations of F before stopping (normally <= 20 iterations)
+    eps_tol=0.01
 ):
     """
-    Given a graph and a continuous label signal over labeled_ndces, 
-    impute the rest of the signal with its harmonic extension (hard clamping). 
-    Returns n-vector predicting signal over the entire graph.
+    Compute the harmonic extension of a signal over a graph with n nodes, 
+    given a subset of them that are labeled. 
+    In other words, impute the rest of the signal with its harmonic extension (hard clamping), as in [1]_. 
+    
+    Parameters
+    ----------
+    labeled_signal : array
+        1-dimensional array of length n with labeled rows set to their fixed values, and unlabeled rows set to arbitrary values.
+    adj_mat : array
+        (n x n) adjacency matrix of the graph.
+    labeled_ndces : array
+        Boolean mask indicating which cells are in the labeled set.
+    method : :obj:`str`, optional
+        Mode of operation. One of ``['iterative', 'direct']``.
+    eps_tol : :obj:`float`, optional
+        Min. relative error in consecutive iterations of F before stopping (normally <= 20 iterations).
+
+    Returns
+    -------
+    imputed_signal : array
+        1-dimensional array of length (# unlabeled data) with imputed values for unlabeled nodes.
+    
+    References
+    ----------
+    .. [1] X. Zhu, Z. Ghahramani, J.D. Lafferty, Semi-supervised learning 
+           using gaussian fields and harmonic functions, Proceedings of the 
+           20th International conference on Machine learning (ICML-03), pp. 912–919. 2003.
     """
     labels = labeled_signal[labeled_ndces]
     if scipy.sparse.issparse(labels):
@@ -51,11 +75,10 @@ def harmonic_extension(
     elif method == 'direct':
         toret = scipy.sparse.linalg.lsmr(scipy.sparse.identity(num_unlabeled) - p_uu, inv_sofar)
         return toret[0]
-        return toret[0]
 
 
 def label_propagation(
-    labeled_signal, # (n x |Y|) matrix with unlabeled rows set to arbitrary values.
+    labeled_signal, 
     adj_mat, # (n x n) adjacency matrix
     labeled_ndces, # Boolean mask indicating which cells are in the labeled set.
     param_alpha=0.8, 
@@ -63,8 +86,34 @@ def label_propagation(
     eps_tol=0.01   # Min. relative error in consecutive iterations of F before stopping (normally <= 20 iterations)
 ):
     """
-    From Zhou et al. 2003 "Learning with local and global consistency".
+    Perform label propagation From [1]_.
     Returns an n-vector of real-valued relative confidences.
+    
+    Parameters
+    ----------
+    labeled_signal : array
+        (n x |Y|) matrix with unlabeled rows set to arbitrary values.
+    adj_mat : array
+        (n x n) adjacency matrix of the graph.
+    labeled_ndces : array
+        Boolean mask indicating which cells are in the labeled set.
+    param_alpha : :obj:`float`, optional
+        Parameter controlling the relative weight of the labeled signal vs. the graph Laplacian. Default is 0.8.
+    method : :obj:`str`, optional
+        Mode of operation. One of ``['iterative', 'direct']``. Default is ``'iterative'`` (more efficient, no matrix inversion).
+    eps_tol : :obj:`float`, optional
+        Min. relative error in consecutive iterations of F before stopping, if `method == iterative`. Normally converges in << 20 iterations.
+
+    Returns
+    -------
+    imputed_signal : array
+        1-dimensional array of length (# unlabeled data) with imputed values for unlabeled nodes.
+    
+    References
+    ----------
+    .. [1] D. Zhou, O. Bousquet, T. Lal, J. Weston, B. Schölkopf, Learning 
+           with local and global consistency. Advances in Neural Information 
+           Processing Systems, 2003, MIT Press.
     """
     labeled_signal[~labeled_ndces, :] = 0
     dw_invsqrt = scipy.sparse.diags(
@@ -89,5 +138,3 @@ def label_propagation(
         return cumu
     elif method == 'direct':
         return scipy.sparse.linalg.lsmr(scipy.sparse.identity(R.shape[0]) - param_alpha*R, labeled_signal)
-
-

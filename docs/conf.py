@@ -10,3 +10,4 @@ extensions = [
 ]
 autodoc_typehints = "description"
 html_theme = "furo"
+napoleon_numpy_docstring = True
