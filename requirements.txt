@@ -1,0 +1,6 @@
+numpy>=1.25.2
+scipy>=1.11.1
+pip>=23.2.1
+poetry>=1.1.13
+nox-poetry
+virtualenv>=20.24.2

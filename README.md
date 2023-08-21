@@ -7,7 +7,6 @@ A collection of fast and efficient algorithmic primitives.
 [![Status](https://img.shields.io/pypi/status/skeins.svg)][status]
 [![Python Version](https://img.shields.io/pypi/pyversions/skeins)][python version]
 
-[![License](https://img.shields.io/pypi/l/skeins)][license]
 [![Read the documentation at https://skeins.readthedocs.io/](https://img.shields.io/readthedocs/skeins/latest.svg?label=Read%20the%20Docs)][read the docs]
 [![Tests](https://github.com/b-akshay/skeins/workflows/Tests/badge.svg)][tests]
 
