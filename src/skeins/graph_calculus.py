@@ -5,7 +5,7 @@ Implements graph calculus, as described in:
 
 
 import numpy as np, scipy
-import graph_construction
+from .graph_construction import symmetric_part, asymmetric_part
 
 
 def grad_op_graph(fn, adj_mat):
@@ -27,7 +27,7 @@ def grad_op_graph(fn, adj_mat):
 
 
 def _compute_transitions_asym(adj_mat):
-    W = graph_construction.symmetric_part(adj_mat)
+    W = symmetric_part(adj_mat)
     recip = np.reciprocal(np.asarray(W.sum(axis=0)).astype(np.float64))
     recip[np.isinf(recip)] = 0
     return scipy.sparse.spdiags(recip, 0, W.shape[0], W.shape[0]).dot(W)
@@ -90,7 +90,7 @@ def curl_op_graph(field_mat, adj_mat):
         Matrix of curl associated with each edge.
     """
     np.reciprocal(adj_mat.data, out=adj_mat.data)
-    return adj_mat.multiply(graph_construction.symmetric_part(field_mat))
+    return adj_mat.multiply(symmetric_part(field_mat))
 
 
 def helmholtz(
@@ -128,7 +128,7 @@ def helmholtz(
             given_divergence
         )
     else:
-        sympart = graph_construction.symmetric_part(field_mat)
+        sympart = symmetric_part(field_mat)
         potential = scipy.sparse.linalg.lsmr(
             laplacian_op, 
             div_op_graph(field_mat, adj_mat)

@@ -38,19 +38,27 @@ def asymmetric_part(A):
     return 0.5*(A - A.T)
 
 
-def compute_diffusion_kernel(adj_mat, alpha=1.0, sym=True, normalize=True):
+def compute_diffusion_kernel(
+    adj_mat, alpha=0.0, 
+    normalize=True, sym=True, self_loops=False
+):
     """Compute the diffusion kernel of a graph [1]_ , given its adjacency matrix.
 
     Parameters
     ----------
     adj_mat : sparse matrix
         Adjacency matrix of the graph.
-    alpha : The exponent of the diffusion kernel. 
-        * 1 = Laplace-Beltrami (density)-normalized [default]. 
+    alpha : float , The exponent of the diffusion kernel. 
+        * 1 = Laplace-Beltrami (density)-normalized. 
         * 0.5 = normalized graph Laplacian (Fokker-Planck dynamics) [2]_.
-        * 0 = classical graph Laplacian. 
-    sym : Whether to symmetrize the transition matrix.
-    normalize : Whether to normalize the transition matrix.
+        * 0 = classical graph Laplacian [default]. 
+    normalize : bool
+        Whether to normalize the transition matrix.
+    sym : bool
+        Whether the transition matrix normalization should be symmetric. (Relies on normalize==True).
+        If True, the kernel is symmetric $D^{-1/2} A D^{1/2}$. If False, it is asymmetric $D^{-1} A$. 
+    self_loops : bool
+        Whether to add self-loops to the graph [3]_.
 
     Returns
     -------
@@ -64,11 +72,15 @@ def compute_diffusion_kernel(adj_mat, alpha=1.0, sym=True, normalize=True):
     .. [2] Boaz Nadler, Stephane Lafon, Ioannis Kevrekidis, Ronald Coifman, 
            Diffusion maps, spectral clustering and reaction coordinates of dynamical systems, 
            Applied and Computational Harmonic Analysis 21.1 (2006): 113-127.
+    .. [3] Felix Wu, Amauri Souza, Tianyi Zhang, Christopher Fifty, Tao Yu, Kilian Weinberger, 
+           Simplifying graph convolutional networks, International conference on machine learning, pp. 6861-6871. PMLR, 2019.
     """
     similarity_mat = symmetric_part(adj_mat)
     dens = np.asarray(similarity_mat.sum(axis=0))  # dens[i] is an estimate for the sampling density at point i.
     K = scipy.sparse.spdiags(np.power(dens, -alpha), 0, similarity_mat.shape[0], similarity_mat.shape[0])
     W = scipy.sparse.csr_matrix(K.dot(similarity_mat).dot(K))
+    if self_loops:
+        W = W + scipy.sparse.identity(W.shape[0])
     if not normalize:
         return W
     else:
@@ -86,7 +98,7 @@ def triangle_kernel(gmat, ID='M1'):
     ----------
     gmat: sparse matrix
         A sparse adjacency matrix of the graph.
-    ID: str, optional
+    ID: str , optional
         The type of triangle kernel to compute. Options in ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7'].
 
     Returns

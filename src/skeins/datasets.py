@@ -1,11 +1,10 @@
 import numpy as np, scipy
 import requests, os
 import scanpy as sc
-import deepchem as dc
 
 
 def get_gtex_snrnaseq(
-    file_path='GTEx_snRNAseq_atlas.h5ad', 
+    file_path='GTEx_8_snRNAseq_atlas.h5ad', 
     mode='all', 
     num_subsample=None, 
     random_state=42
@@ -15,9 +14,12 @@ def get_gtex_snrnaseq(
     Parameters
     ----------
     file_path : str, optional
-        Path to save the file to. Default: 'GTEx_snRNAseq_atlas.h5ad'.
+        Path to save the file to. 
     mode : str, optional
         One of ``['all', 'immune']``. Default: ``'all'``.
+    num_subsample : int, optional
+        Number of cells to subsample. Default: ``None``.
+    random_state : int, optional
     
     Returns
     -------
