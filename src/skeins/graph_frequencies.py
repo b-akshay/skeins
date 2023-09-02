@@ -73,7 +73,7 @@ def diffmap_proj(
         Number of dimensions to return. Defaults to `n_comps`-1 if not given.
     n_comps : int, optional
         Number of components to use in computation of smoothed diffusion time. 
-        Defaults to all components, up to a maximum of 2000.
+        Defaults to all components (i.e. n_dims-1), up to a maximum of 2000.
     return_eigvals : bool, optional
         Whether to return the eigenvalues as well. Defaults to False.
     embed_type : str, optional
@@ -93,7 +93,7 @@ def diffmap_proj(
     .. [1] Ronald R. Coifman, Stéphane Lafon, Diffusion maps, 
            Applied and computational harmonic analysis 21.1 (2006): 5-30.
     """
-    if n_comps is None:     # When data are high-d dimensional with log2(d) \leq 14-16 as for scRNA, 2K eigenvector computation is tolerably fast; change otherwise
+    if n_comps is None:     # When data are high-d dimensional with log2(d) \leq 14-16, 2K eigenvector computation is tolerably fast; change otherwise
         n_comps = min(2000, adj_mat.shape[0]-1)
     if n_dims is None:
         n_dims = n_comps - 1
@@ -111,16 +111,16 @@ def diffmap_proj(
     else:
         eigvecs_normalized = sklearn.preprocessing.normalize(np.real(evecs_unsym), axis=0, norm='l2')
     
-    if t is None:     # Use min_energy_frac to determine the fraction of noise variance 
-        t = min_t_for_energy(eigvals, n_dims+1, min_energy_frac)
-    frac_energy_explained = np.cumsum(np.power(np.abs(eigvals), t)/np.sum(np.power(np.abs(eigvals), t)))[n_dims]
-    print("{} dimensions contain about {} fraction of the variance in the first {} dimensions (Diffusion time = {})".format(
-        n_dims+1, frac_energy_explained, n_comps, t))
     if embed_type=='naive':
         all_comps = eigvecs_normalized
-    elif embed_type=='diffmap':
+    if t is None:     # Use min_energy_frac to determine the fraction of noise variance 
+        t = min_t_for_energy(eigvals, n_dims+1, min_energy_frac)
+    if embed_type=='diffmap':
+        frac_energy_explained = np.cumsum(np.power(np.abs(eigvals), t)/np.sum(np.power(np.abs(eigvals), t)))[n_dims]
+        print("{} dimensions contain about {} fraction of the variance in the first {} dimensions (Diffusion time = {})".format(
+            n_dims+1, frac_energy_explained, n_comps, t))
         all_comps = np.power(np.abs(eigvals), t) * eigvecs_normalized
-    elif embed_type=='commute':
+    if embed_type=='commute':
         all_comps = np.power((1-np.abs(eigvals)), -t/2) * eigvecs_normalized
     if not return_eigvals:
         return all_comps[:,1:(n_dims+1)]     # Return n_dims dimensions, skipping the first trivial one.

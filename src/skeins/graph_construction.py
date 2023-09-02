@@ -76,11 +76,14 @@ def compute_diffusion_kernel(
            Simplifying graph convolutional networks, International conference on machine learning, pp. 6861-6871. PMLR, 2019.
     """
     similarity_mat = symmetric_part(adj_mat)
-    dens = np.asarray(similarity_mat.sum(axis=0))  # dens[i] is an estimate for the sampling density at point i.
-    K = scipy.sparse.spdiags(np.power(dens, -alpha), 0, similarity_mat.shape[0], similarity_mat.shape[0])
-    W = scipy.sparse.csr_matrix(K.dot(similarity_mat).dot(K))
+    W = similarity_mat
+    if alpha != 0:
+        dens = np.asarray(similarity_mat.sum(axis=0))  # dens[i] is an estimate for the sampling density at point i.
+        K = scipy.sparse.spdiags(np.power(dens, -alpha), 0, similarity_mat.shape[0], similarity_mat.shape[0])
+        W = scipy.sparse.csr_matrix(K.dot(similarity_mat).dot(K))
     if self_loops:
         W = W + scipy.sparse.identity(W.shape[0])
+    
     if not normalize:
         return W
     else:
