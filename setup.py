@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
 	name='skeins',
-	version='0.1.0',
+	version='0.1.2',
 	author='Akshay Balsubramani',
 	author_email='akshay@akshay.bio',
 	packages=['skeins'],
@@ -12,8 +12,8 @@ setup(
     install_requires = [
         'numpy',
         'scipy',
-        'pandas',
         'scikit-learn', 
+        'scanpy', 
         'requests'
     ], 
     tests_require = [
@@ -23,7 +23,7 @@ setup(
                'Mac OS-X',
                'Unix',
                'Windows'],            # Valid platforms your code works on, adjust to your flavor
-    python_requires=">=3.9",          # Python version restrictions
+    python_requires=">=3.8",          # Python version restrictions
     # extra_requires = {
     #     'viz': ['py3DMol', 'Pillow', 'seaborn'],
     #     'jupyter': ['jupyter'],
