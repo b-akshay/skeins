@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
 	name='skeins',
-	version='0.0.1',
+	version='0.1.0',
 	author='Akshay Balsubramani',
 	author_email='akshay@akshay.bio',
 	packages=['skeins'],
