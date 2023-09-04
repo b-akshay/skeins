@@ -5,7 +5,7 @@ Implements graph embedding methods, as described in:
 
 
 import numpy as np, scipy, sklearn
-import graph_construction
+from .graph_construction import compute_diffusion_kernel
 
 
 def compute_eigen(adj_mat, n_comps=2, sym=True):
@@ -97,7 +97,7 @@ def diffmap_proj(
         n_comps = min(2000, adj_mat.shape[0]-1)
     if n_dims is None:
         n_dims = n_comps - 1
-    eigvals, evecs = compute_eigen(graph_construction.compute_diffusion_kernel(adj_mat, sym=sym_compute), n_comps=n_comps, sym=sym_compute)
+    eigvals, evecs = compute_eigen(compute_diffusion_kernel(adj_mat, sym=sym_compute), n_comps=n_comps, sym=sym_compute)
     if sym_compute:
         evecs_sym = evecs
         evecs_unsym = np.multiply(evecs, np.outer(1.0/evecs[:,0].astype(np.float64), np.ones(evecs.shape[1])))
