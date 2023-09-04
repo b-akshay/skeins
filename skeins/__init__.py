@@ -10,3 +10,4 @@ from . import visualization
 #from . import hierarchy_tools
 
 __version__ = "0.1.0"
+__author__ = "Akshay Balsubramani"
