@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
 	name='skeins',
-	version='0.1.2',
+	version='0.1.3',
 	author='Akshay Balsubramani',
 	author_email='akshay@akshay.bio',
 	packages=['skeins'],
@@ -24,6 +24,7 @@ setup(
                'Unix',
                'Windows'],            # Valid platforms your code works on, adjust to your flavor
     python_requires=">=3.8",          # Python version restrictions
+    package_data={'': ['requirements.txt']}
     # extra_requires = {
     #     'viz': ['py3DMol', 'Pillow', 'seaborn'],
     #     'jupyter': ['jupyter'],

@@ -9,7 +9,7 @@
 project = "skeins"
 author = "Akshay Balsubramani"
 copyright = "2023, Akshay Balsubramani"
-release = "0.1.2"
+# release = "0.1.2"
 # extensions = [
 #     "sphinx.ext.autodoc",
 #     "sphinx.ext.napoleon",
