@@ -2,4 +2,4 @@ numpy
 scipy
 scikit-learn
 requests
-scanpy
+scanpy>=1.7
