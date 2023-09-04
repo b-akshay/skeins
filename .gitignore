@@ -1,7 +1,5 @@
-.mypy_cache/
-/.coverage
-/.coverage.*
-/.nox/
+*.pyc
+*.c
 /.python-version
 /.pytype/
 /dist/
