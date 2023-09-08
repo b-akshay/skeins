@@ -9,7 +9,7 @@ def get_gtex_snrnaseq(
     num_subsample=None, 
     random_state=42
 ):
-    """Download and load the GTEx snRNA-seq atlas [1]_. 
+    """Download and load the GTEx snRNA-seq atlas [1]__. 
 
     Parameters
     ----------
@@ -25,6 +25,12 @@ def get_gtex_snrnaseq(
     -------
     adata : AnnData
         The GTEx snRNA-seq atlas.
+
+    References
+    ----------
+    .. [1] Gökcen Eraslan, Eugene Drokhlyansky, Shankara Anand, Evgenij Fiskin, Ayshwarya Subramanian, Michal Slyper, Jiali Wang et al., 
+           Single-nucleus cross-tissue molecular reference maps toward understanding disease gene function, 
+           Science 376, no. 6594 (2022): eabl4290.
     """
     if not os.path.exists(file_path):
         if mode=='immune':

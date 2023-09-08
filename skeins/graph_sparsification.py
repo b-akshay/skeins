@@ -13,7 +13,7 @@ def spectral_sparsify(
 ):
     """ Computes a spectral sparsifier of the graph given by an adjacency matrix. 
 
-    Uses the sampling procedure given in [1]_.
+    Uses the sampling procedure given in [1]__.
     
     Parameters:
     ----------

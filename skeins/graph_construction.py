@@ -42,7 +42,7 @@ def compute_diffusion_kernel(
     adj_mat, alpha=0.0, 
     normalize=True, sym=True, self_loops=False
 ):
-    """Compute the diffusion kernel of a graph [1]_ , given its adjacency matrix.
+    """Compute the diffusion kernel of a graph [1]__ , given its adjacency matrix.
 
     Parameters
     ----------
@@ -50,7 +50,7 @@ def compute_diffusion_kernel(
         Adjacency matrix of the graph.
     alpha : float , The exponent of the diffusion kernel. 
         * 1 = Laplace-Beltrami (density)-normalized. 
-        * 0.5 = normalized graph Laplacian (Fokker-Planck dynamics) [2]_.
+        * 0.5 = normalized graph Laplacian (Fokker-Planck dynamics) [2]__.
         * 0 = classical graph Laplacian [default]. 
     normalize : bool
         Whether to normalize the transition matrix.
@@ -58,7 +58,7 @@ def compute_diffusion_kernel(
         Whether the transition matrix normalization should be symmetric. (Relies on normalize==True).
         If True, the kernel is symmetric $D^{-1/2} A D^{1/2}$. If False, it is asymmetric $D^{-1} A$. 
     self_loops : bool
-        Whether to add self-loops to the graph [3]_.
+        Whether to add self-loops to the graph [3]__.
 
     Returns
     -------
@@ -95,7 +95,7 @@ def compute_diffusion_kernel(
 
 
 def triangle_kernel(gmat, ID='M1'):
-    """Compute an adjacency matrix of triangle counts for a graph, given its adjacency matrix [1]_ .
+    """Compute an adjacency matrix of triangle counts for a graph, given its adjacency matrix [1]__ .
 
     Parameters
     ----------
@@ -140,8 +140,8 @@ def triangle_kernel(gmat, ID='M1'):
         return c
 
 
-def personalized_pagerank_kernel(adj_mat, param_alpha=0.05, eps_tol=0.5):
-    """Compute an approximate personalized pagerank kernel [1]_ . 
+def personalized_pagerank_kernel(adj_mat, apply_to_data=None, param_alpha=0.05, eps_tol=0.5):
+    """Compute an approximate personalized pagerank kernel [1]__ . 
     
     If a is the regularization parameter, computes (I - (1 - param_alpha)*gmat )^{-1} using power iterations 
     (as in https://arxiv.org/pdf/1911.05485.pdf and https://arxiv.org/pdf/1810.05997.pdf ). 
@@ -150,6 +150,8 @@ def personalized_pagerank_kernel(adj_mat, param_alpha=0.05, eps_tol=0.5):
     ----------
     adj_mat : sparse matrix
         Adjacency matrix of the graph.
+    apply_to_data : sparse matrix, optional
+        A matrix to apply the kernel to. Defaults to the identity (returning the full kernel matrix).
     param_alpha : float, optional
         The regularization parameter. Default is 0.05.
     eps_tol : float, optional
@@ -162,28 +164,22 @@ def personalized_pagerank_kernel(adj_mat, param_alpha=0.05, eps_tol=0.5):
     
     References
     ----------
-    .. [1] J. Klicpera, A. Bojchevski, S. Günnemann, Predict then propagate: 
+    .. [1] J. Gasteiger, A. Bojchevski, S. Günnemann, Predict then propagate: 
            graph neural networks meet personalized pagerank, 
            arXiv preprint arXiv:1810.05997, 2018.
     """
-    stop_crit = False
     R = compute_diffusion_kernel(adj_mat, alpha=0.0, sym=False, normalize=True).T
     labeled_signal = scipy.sparse.identity(R.shape[0])
+    if apply_to_data is not None:
+        labeled_signal = labeled_signal.dot(apply_to_data)
     F = scipy.sparse.identity(R.shape[0])
-    sparsemats = True
-    while not stop_crit:
-        if sparsemats:
-            F_new = ((1-param_alpha)*R.dot(F)) + (param_alpha*labeled_signal)
-            resid = (F_new - F)
-            resid_err = np.sum(np.square(resid.data))
-            rel_err = resid_err/np.sum(np.square(F_new.data))
-        else:
-            F_new = np.array(((1-param_alpha)*R.dot(F)) + (param_alpha*labeled_signal))
-            rel_err = np.square(F_new - F).sum()/np.square(F_new).sum()
+    rel_err = 1.0
+    while rel_err > eps_tol:
+        F_new = ((1-param_alpha)*R.dot(F)) + (param_alpha*labeled_signal)
+        resid = (F_new - F)
+        resid_err = np.sum(np.square(resid.data))
+        rel_err = resid_err/np.sum(np.square(F_new.data))
         F = F_new
-        print(resid_err, rel_err)
-        if rel_err <= eps_tol:
-            stop_crit = True
     return F
 
 
@@ -208,6 +204,40 @@ def gcn_kernel(adj_mat, self_loops=True):
     return norm_kernel
 
 
+def gcn_euler_kernel(adj_mat, apply_to_data=None, terminal_time=5, num_steps_propagation=3):
+    """Compute an Euler-Maruyama-discretized graph diffusion kernel.
+
+    Parameters
+    ----------
+    adj_mat : sparse matrix
+        Adjacency matrix of the graph.
+    apply_to_data : sparse matrix, optional
+        A matrix to apply the kernel to. Defaults to the identity (returning the full kernel matrix).
+    terminal_time : float, optional
+        The terminal time for the diffusion. Default is 5.
+    num_steps_propagation : int, optional
+        The number of timesteps to use for the Euler-Maruyama discretization. Default is 3.
+    
+    Returns
+    -------
+    norm_adj : sparse matrix
+        The Euler-Maruyama-discretized graph diffusion kernel.
+    
+    References
+    ----------
+    .. [1] Yifei Wang, Yisen Wang, Jiansheng Yang, Zhouchen Lin, 
+           Dissecting the diffusion process in linear graph convolutional networks, 
+           Advances in Neural Information Processing Systems 34 (2021): 5758-5769.
+    """
+    norm_adj = compute_diffusion_kernel(adj_mat, alpha=0.0, sym=True, normalize=True)
+    step_length = 1.0*terminal_time/num_steps_propagation
+    if apply_to_data is None:
+        apply_to_data = scipy.sparse.identity(norm_adj.shape[0])
+    for i in range(num_steps_propagation):
+        norm_adj = (1-step_length)*apply_to_data + step_length*norm_adj.dot(apply_to_data)
+    return norm_adj
+
+
 def diffusion_mutualreach_kernel(adj_mat, diffusion_steps=1):
     """Given a graph, compute a kernel indicating nodes that are mutually reachable after diffusion.
 
@@ -222,6 +252,12 @@ def diffusion_mutualreach_kernel(adj_mat, diffusion_steps=1):
     -------
     result : sparse matrix
         The mutual reachability kernel.
+    
+    References
+    ----------
+    .. [1] Lawrence K. Saul, A tractable latent variable model 
+           for nonlinear dimensionality reduction, Proceedings of the 
+           National Academy of Sciences 117, no. 27 (2020): 15403-15408.
     """
     powers_so_far = []
     kmat = adj_mat
@@ -263,7 +299,7 @@ def mst_connections_kernel(adj_mat, distance_mat=None):
 
 
 def saul_nonparametric_kernel(adj_mat, diffusion_steps=1):
-    """Compute the nonparametric kernel from [1]_ .
+    """Compute the nonparametric kernel from [1]__ .
     
     Parameters
     ----------
@@ -286,4 +322,35 @@ def saul_nonparametric_kernel(adj_mat, diffusion_steps=1):
     Mmat = diffusion_mutualreach_kernel(adj_mat, diffusion_steps=diffusion_steps)
     Tmat = mst_connections_kernel(adj_mat)
     return adj_mat.multiply(Mmat + Tmat)
+
+
+def sparsifiers_to_identity(kernel_mat):
+    """Given a kernel matrix, return a list of increasingly sparse matrices interpolating spectrally between it and the identity [1]__. 
+
+    Parameters
+    ----------
+    kernel_mat : sparse matrix
+        A kernel matrix with maximum eigenvalue <= 1. 
+        Could be, but isn't limited to, a normalized graph Laplacian.
+    
+    Returns
+    -------
+    list_of_sparsifiers: list
+        A list of increasingly sparse matrices where `list_of_sparsifiers[0]` is close to `kernel_mat` 
+        and `list_of_sparsifiers[-1]` is close to the identity matrix.
+
+    References
+    ----------
+    .. [1] Mu Li, Gary L Miller, Richard Peng, Iterative Row Sampling, IEEE 54th Annual Symposium on Foundations of Computer Science, 127–36. IEEE, 2013.
+    """
+    list_of_sparsifiers = []
+    min_eigval = np.min(np.linalg.eigvals(kernel_mat))
+    num_sparsifiers = np.ceil(-np.log2(min_eigval)).astype(int)
+    gamma_multiplier = 1   # Initialize to an upper bound on the max eigenvalue. Here assumed to be 1.
+    for i in range(num_sparsifiers+1):
+        sparsifier = gamma_multiplier*scipy.sparse.identity(kernel_mat.shape[0]) + kernel_mat
+        list_of_sparsifiers.append(sparsifier)
+        gamma_multiplier *= 0.5
+    list_of_sparsifiers.append(kernel_mat)
+    return list_of_sparsifiers
 

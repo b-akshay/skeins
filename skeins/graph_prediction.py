@@ -17,7 +17,7 @@ def harmonic_extension(
     """
     Compute the harmonic extension of a signal over a graph with n nodes, 
     given a subset of them that are labeled. 
-    In other words, impute the rest of the signal with its harmonic extension (hard clamping), as in [1]_. 
+    In other words, impute the rest of the signal with its harmonic extension (hard clamping), as in [1]__. 
     
     Parameters
     ----------
@@ -86,7 +86,7 @@ def label_propagation(
     eps_tol=0.01   # Min. relative error in consecutive iterations of F before stopping (normally <= 20 iterations)
 ):
     """
-    Perform label propagation From [1]_.
+    Perform label propagation From [1]__.
     Returns an n-vector of real-valued relative confidences.
     
     Parameters

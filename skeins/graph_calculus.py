@@ -1,6 +1,7 @@
 """
-Implements graph calculus, as described in: 
-- https://akshay.bio/variable-expectations/graph-calculus/
+Implements graph calculus, as described in `this blog post`_.
+
+.. _`this blog post`: https://akshay.bio/variable-expectations/graph-calculus/ 
 """
 
 
@@ -71,7 +72,7 @@ def div_op_graph(field_mat, adj_mat):
         n-length array of vertex-wise divergence values.
     """
     trans_mat = _compute_transitions_asym(adj_mat)
-    return np.ravel(trans_mat.multiply(graph_construction.asymmetric_part(field_mat)).sum(axis=1))
+    return np.ravel(trans_mat.multiply(asymmetric_part(field_mat)).sum(axis=1))
 
 
 def curl_op_graph(field_mat, adj_mat):
@@ -119,6 +120,10 @@ def helmholtz(
             Length-n array of vertex potentials.
         edge_potential : sparse matrix
             (n x n) matrix of edge potentials.
+    
+    References
+    ----------
+    .. [1] Lek-Heng Lim, Hodge Laplacians on Graphs, Siam Review 62 (3): 685–715 (2020).
     """
     laplacian_op = laplacian_op_graph(adj_mat)
     if given_divergence is not None:

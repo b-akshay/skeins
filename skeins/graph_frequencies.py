@@ -55,7 +55,7 @@ def diffmap_proj(
 ):
     """Compute diffusion map embedding.
 
-    This [1]_ computes the diffusion map embedding for a graph, given its adjacency matrix.
+    This [1]__ computes the diffusion map embedding for a graph, given its adjacency matrix.
 
     Assumes that {sym_return => sym_compute} holds, i.e. doesn't allow sym_compute==False and sym_return==True.
     Returns (n_comps-1) components, excluding the first which is the same for all data.
