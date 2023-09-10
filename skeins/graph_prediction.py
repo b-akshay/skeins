@@ -1,6 +1,5 @@
 """
-Implements label propagation and related methods, as described in: 
-- https://akshay.bio/blog/graph-prediction-diffusion/
+Implements label propagation and related methods.
 """
 
 
@@ -86,7 +85,7 @@ def label_propagation(
     eps_tol=0.01   # Min. relative error in consecutive iterations of F before stopping (normally <= 20 iterations)
 ):
     """
-    Perform label propagation From [1]__.
+    Perform label propagation from [1]__.
     Returns an n-vector of real-valued relative confidences.
     
     Parameters

@@ -17,8 +17,42 @@ skeins API reference
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Contents
+   :caption: Getting Started
    :numbered:
+   :name: start
+
+
+
+
+Installation
+============
+
+The most recent release can be installed from `PyPI <https://pypi.org/project/skeins>`_:
+
+.. code-block:: shell
+
+    $ pip install skeins
+
+To get the extras, install with:
+
+.. code-block:: shell
+
+    $ pip install skeins[viz]
+
+The most recent code and data can be installed directly from GitHub with:
+
+.. code-block:: shell
+
+    $ pip install git+https://github.com//skeins.git
+
+To install in development mode, use the following:
+
+.. code-block:: shell
+
+    $ git clone git+https://github.com//skeins.git
+    $ cd skeins
+    $ pip install -e .
+
 
 
 Graphs
@@ -61,6 +95,7 @@ Miscellaneous
 
 
 
+
 Indices and tables
 ==================
 
@@ -79,25 +114,3 @@ Indices and tables
 .. =============
 
 .. Contributions are eagerly accepted! If you would like to contribute a feature then fork the master branch and be sure to run the tests before changing any code. Let us know what you want to do on the issue tracker just in case we're already working on an implementation of something similar. Also, please don't forget to add tests for any new functions. Please review the `Code of Conduct <https://pomegranate.readthedocs.io/en/latest/CODE_OF_CONDUCT.html>`_ before contributing. 
-
-.. .. toctree::
-..    :maxdepth: 1
-..    :hidden:
-..    :caption: Getting Started
-
-..    self
-..    install.rst
-..    api.rst
-..    CODE_OF_CONDUCT.rst
-..    faq.rst
-..    whats_new.rst
-
-.. .. toctree::
-..    :maxdepth: 1
-..    :hidden:
-..    :caption: Features
-
-..    tutorials/C_Feature_Tutorial_1_GPU_Usage.ipynb
-..    tutorials/C_Feature_Tutorial_2_Mixed_Precision_and_DataTypes.ipynb
-..    tutorials/C_Feature_Tutorial_3_Out_Of_Core_Learning.ipynb
-..    tutorials/C_Feature_Tutorial_4_Priors_and_Semi-supervised_Learning.ipynb

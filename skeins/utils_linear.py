@@ -75,8 +75,11 @@ def cwt_matrix(n_rows, n_columns, seed=None):
     Notes
     -----
     Given a matrix A, with high probability,
-    .. math:: \|SA\| = (1 \pm \epsilon)\|A\|
-    Where the error epsilon is related to the size of S.
+    .. math:: 
+    
+            \|SA\| = (1 \pm \epsilon)\|A\|
+
+    where the error epsilon is related to the size of S.
 
     Code here is from https://github.com/scipy/scipy/blob/v1.11.2/scipy/linalg/_sketches.py
     """

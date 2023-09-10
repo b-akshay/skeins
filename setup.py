@@ -8,11 +8,12 @@ setup(
 	packages=['skeins'],
 	url='https://github.com/b-akshay/skeins',
 	license='LICENSE.txt',
-	description='Some efficient algorithmic primitives in Python.',
+	description='Some efficient algorithmic primitives for data analysis.',
     install_requires = [
         'numpy',
         'scipy',
         'scikit-learn', 
+        # 'pytorch', 
         'scanpy>=1.7', 
         'requests'
     ], 
@@ -22,11 +23,13 @@ setup(
     platforms=['Linux',
                'Mac OS-X',
                'Unix',
-               'Windows'],            # Valid platforms your code works on, adjust to your flavor
+               'Windows'],  
     python_requires=">=3.8",          # Python version restrictions
     package_data={'': ['requirements.txt']}
-    # extra_requires = {
-    #     'viz': ['py3DMol', 'Pillow', 'seaborn'],
-    #     'jupyter': ['jupyter'],
-    # }
+    extras_require = {
+        'viz': ['celluloid'], 
+        'chem': ['rdkit-pypi', 'deepchem'], 
+        'graph': ['scikit-network', 'hdbscan']
+        # 'genomics': ['jupyter']
+    }
 )
